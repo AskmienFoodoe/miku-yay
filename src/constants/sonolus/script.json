@@ -10,6 +10,20 @@
                     "h": 2,
                     "rotation": -90
                 }
+            ],
+            "windows": [
+                {
+                    "min": -50,
+                    "max": 50
+                },
+                {
+                    "min": -100,
+                    "max": 100
+                },
+                {
+                    "min": -150,
+                    "max": 150
+                }
             ]
         },
         {
@@ -29,6 +43,20 @@
                     "w": 2,
                     "h": 2,
                     "rotation": -90
+                }
+            ],
+            "windows": [
+                {
+                    "min": -50,
+                    "max": 50
+                },
+                {
+                    "min": -100,
+                    "max": 100
+                },
+                {
+                    "min": -150,
+                    "max": 150
                 }
             ]
         },
@@ -50,6 +78,20 @@
                     "h": 2,
                     "rotation": -90
                 }
+            ],
+            "windows": [
+                {
+                    "min": -50,
+                    "max": 50
+                },
+                {
+                    "min": -100,
+                    "max": 100
+                },
+                {
+                    "min": -150,
+                    "max": 150
+                }
             ]
         },
         {
@@ -70,6 +112,20 @@
                     "h": 2,
                     "rotation": -90
                 }
+            ],
+            "windows": [
+                {
+                    "min": 0,
+                    "max": 50
+                },
+                {
+                    "min": 0,
+                    "max": 100
+                },
+                {
+                    "min": 0,
+                    "max": 150
+                }
             ]
         },
         {
@@ -89,6 +145,20 @@
                     "w": 2,
                     "h": 2,
                     "rotation": -90
+                }
+            ],
+            "windows": [
+                {
+                    "min": -50,
+                    "max": 50
+                },
+                {
+                    "min": -100,
+                    "max": 100
+                },
+                {
+                    "min": -150,
+                    "max": 150
                 }
             ]
         },
@@ -117,6 +187,20 @@
                     "w": 2,
                     "h": 2,
                     "rotation": -90
+                }
+            ],
+            "windows": [
+                {
+                    "min": 0,
+                    "max": 50
+                },
+                {
+                    "min": 0,
+                    "max": 100
+                },
+                {
+                    "min": 0,
+                    "max": 150
                 }
             ]
         }
@@ -140,7 +224,7 @@
             "script": 2,
             "input": true,
             "data": {
-                "index": 4,
+                "index": 5,
                 "values": [
                     1,
                     1006
@@ -151,7 +235,7 @@
             "script": 2,
             "input": true,
             "data": {
-                "index": 4,
+                "index": 5,
                 "values": [
                     3,
                     1002
@@ -162,7 +246,7 @@
             "script": 3,
             "input": true,
             "data": {
-                "index": 4,
+                "index": 5,
                 "values": [
                     2,
                     1001
@@ -173,7 +257,7 @@
             "script": 4,
             "input": true,
             "data": {
-                "index": 4,
+                "index": 5,
                 "values": [
                     4,
                     2002
@@ -184,7 +268,7 @@
             "script": 5,
             "input": true,
             "data": {
-                "index": 4,
+                "index": 5,
                 "values": [
                     5,
                     1002
@@ -195,7 +279,7 @@
             "script": 6,
             "input": true,
             "data": {
-                "index": 4,
+                "index": 5,
                 "values": [
                     6,
                     1001

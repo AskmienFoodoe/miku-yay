@@ -1,16 +1,12 @@
 import React from "react";
-import ChartContext from "../contexts/ChartContext";
-import { Chart } from "../common/Chart";
 import { Form, Grid, Segment, TextArea, Icon, Button, ButtonProps } from "semantic-ui-react";
 import options from '../constants/sonolus/options.json'
-import { bpmToSeconds, convert } from '../common/sonolus/bestdori-conversion-tools'
-import levelScript from '../constants/sonolus/script.json'
-import { script } from '../constants/sonolus/script'
-import { compile } from '../common/sonolus/compiler'
+import { susToEntities } from "../common/sonolus/sus-to-entities";
+import { compile } from "../common/sonolus/compiler";
+import { script } from "../constants/sonolus/script";
+import levelScript from '../constants/sonolus/script.json';
 
 export default class SonolusConverter extends React.Component {
-    static contextType = ChartContext
-    context!: React.ContextType<typeof ChartContext>
 
     state = {
         inputChart: '',
@@ -22,26 +18,13 @@ export default class SonolusConverter extends React.Component {
         this.setState({ inputChart: value })
     }
 
-    updateChartInContext = () => {
-        let inputChartAsJson = JSON.parse(this.state.inputChart)
-        let inputChartAsChart = new Chart(inputChartAsJson)
-        this.context.updateChart(inputChartAsChart)
-    }
-
     handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps) => {
         try {
-            const entities = convert(bpmToSeconds(this.context.chart.chartElements))
+            const entities = susToEntities(this.state.inputChart)
             const level = compile(script, levelScript, entities)
             this.setState({ level: JSON.stringify(level), options: JSON.stringify(options) })
         } catch(err) {
             console.log(err)
-        }
-    }
-
-    componentDidMount() {
-        const chartElements = this.context.chart.chartElements
-        if (chartElements.length) {
-            this.setState({inputChart: JSON.stringify(this.context.chart.chartElements)})
         }
     }
 
@@ -57,13 +40,12 @@ export default class SonolusConverter extends React.Component {
                                 control={TextArea}
                                 value={this.state.inputChart}
                                 onChange={this.handleInputChange}
-                                onBlur={this.updateChartInContext}
                                 placeholder='Chart source code goes here...'
                             />
                         </Segment>
                     </Grid.Column>
                     <Grid.Column width={2} style={{textAlign: 'center'}}>
-                        <Button color='yellow' animated onClick={this.handleClick}>
+                        <Button color='twitter' animated onClick={this.handleClick}>
                             <Button.Content hidden>
                                 <Icon name='long arrow alternate right' />
                             </Button.Content>

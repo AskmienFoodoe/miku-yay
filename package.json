@@ -1,6 +1,6 @@
 {
-  "name": "bestdori-charting-helper",
-  "version": "1.4.3",
+  "name": "miku-yay",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
