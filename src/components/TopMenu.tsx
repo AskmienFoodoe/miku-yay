@@ -1,5 +1,5 @@
 import React from "react";
-import { Sticky, Menu, Icon, Modal, Image, Divider } from "semantic-ui-react";
+import { Sticky, Menu, Icon, Modal } from "semantic-ui-react";
 import { Link, useLocation } from "react-router-dom";
 import { version } from "../../package.json"
 
@@ -16,22 +16,20 @@ export default function TopMenu() {
                             <Modal.Header>About this App (v{version})</Modal.Header>
                             <Modal.Content>
                                 <p>
-                                    Make charts at <a href='https://bestdori.com/community/charts' target='_blank' rel="noopener noreferrer">Bestdori</a> and play them with <a href='https://sonolus.com/' target='_blank' rel="noopener noreferrer">Sonolus</a>!
+                                    Open sourced on <a href='https://github.com/AskmienFoodoe/miku-yay' target='_blank' rel="noopener noreferrer">Github<Icon name='github'/></a>
                                 </p>
-                                <p>
-                                    This app was designed for 1920x1080 display. If any UI elements are going <em style={{fontVariant: 'small-caps'}}>funky time</em>, try zooming out the browser window. <del>also please don't use this app on mobile</del>
-                                </p>
-                                <Divider />
                                 <p>
                                     Developed by <a href='https://bit.ly/32QV2fl' target='_blank' rel="noopener noreferrer">AskmienFoodoe<Icon name='github'/></a>
                                 </p>
                                 <p>
-                                    Conversion code from <a href='https://github.com/NonSpicyBurrito/sonolus-bandori-engine' target='_blank' rel="noopener noreferrer">https://github.com/NonSpicyBurrito/sonolus-bandori-engine</a>
+                                    Conversion code from <a href='https://github.com/LeptailurusServal/sus2entities' target='_blank' rel="noopener noreferrer">https://github.com/LeptailurusServal/sus2entities</a>
                                 </p>
                                 <p>
-                                    Illustration by <a href='https://twitter.com/paiiart' target='_blank' rel="noopener noreferrer">@paiiart<Icon name='twitter'/></a>
+                                    Engine code from <a href='https://github.com/LeptailurusServal/sonolus-psekai-engine' target='_blank' rel="noopener noreferrer">https://github.com/LeptailurusServal/sonolus-psekai-engine</a>
                                 </p>
-                                <Image src='/fullversion.png' size='big'/>
+                                <p>
+                                    Banner and icon by <a href='https://twitter.com/paiiart' target='_blank' rel="noopener noreferrer">@paiiart<Icon name='twitter'/></a>
+                                </p>
                             </Modal.Content>
                         </Modal>
                     </Menu.Item>
