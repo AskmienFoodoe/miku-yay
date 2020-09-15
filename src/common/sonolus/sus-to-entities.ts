@@ -84,13 +84,27 @@ export function susToEntities(inputFile: string) {
     ({ newNotes: notes, newHolds: holds0 } = holdClear(notes, holds0));
     ({ newNotes: notes, newHolds: holds1 } = holdClear(notes, holds1));
 
-    const holds0Json = holds0.map((note, index) => {
+    const chart = notes.concat(holds0).concat(holds1).sort(comparator)
+
+    let holdsPos = [0,0]
+
+    chart.forEach((note, index) => {
+        const id = note.id
+        if ([5,6,7].includes(note.type)) {
+            note.id = holdsPos[id] + 2
+        }
+        if ([3,5].includes(note.type)) {
+            holdsPos[id] = index
+        }
+    })
+
+    const chartJson = chart.map((note, index) => {
         const data = {
             index: 0,
             values: [] as number[]
         }
         if (note.type > 3) {
-            data.values.push(index + 1)
+            data.values.push(note.id)
         } else {
             data.index++
         }
@@ -103,38 +117,5 @@ export function susToEntities(inputFile: string) {
         }
     })
 
-    const holds1Json = holds1.map((note, index) => {
-        const data = {
-            index: 0,
-            values: [] as number[]
-        }
-        if (note.type > 3) {
-            data.values.push(holds0.length + index + 1)
-        } else {
-            data.index++
-        }
-        data.values.push(note.time)
-        data.values.push(note.lane)
-        data.values.push(note.size)
-        return {
-            archetype: note.type,
-            data
-        }
-    })
-
-    const notesJson = notes.map((note, index) => {
-        const data = {
-            index: 1,
-            values: [] as number[]
-        }
-        data.values.push(note.time)
-        data.values.push(note.lane)
-        data.values.push(note.size)
-        return {
-            archetype: note.type,
-            data
-        }
-    })
-
-    return holds0Json.concat(holds1Json.concat(notesJson))
+    return chartJson
 }
