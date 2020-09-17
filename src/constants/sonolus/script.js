@@ -2,7 +2,7 @@ export const script =
 `
 //
 // Bandori Engine
-// For Sonolus 0.4.6
+// For Sonolus 0.4.4
 //
 // A recreation of Project Sekai engine
 // By Water Boiled Pizza
@@ -20,8 +20,8 @@ PreprocessNote:Execute(
         NoteRandom
         Execute(
             Set(EntityData *NoteTailOriginalLane NoteTailLane)
-            Set(LevelMemory *NoteMinLane Max(-3 Subtract(NoteTailOriginalLane 2)))
-            Set(LevelMemory *NoteMaxLane Min(3 Add(NoteTailOriginalLane 2)))
+            Set(LevelMemory *NoteMinLane Max(Floor(Divide(Lanes -2)) Subtract(NoteTailOriginalLane 1 Floor(Divide(Lanes 2)))))
+            Set(LevelMemory *NoteMaxLane Min(Subtract(Floor(Divide(Lanes 2)) NoteXSize If(Equal(Mod(Lanes 2) 0) 1 0)) Add(NoteTailOriginalLane NoteXSize 1 Floor(Divide(Lanes 2)))))
             And(
                 Or(
                     Equal(Archetype 5)
@@ -113,6 +113,7 @@ InitAuto:And(
             )
             NoteHeadTime
             NoteHeadLane
+			NoteHeadSize
             Or(
                 Equal(Archetype 4)
                 Equal(Archetype 7)
@@ -217,7 +218,7 @@ DrawNoteSlide:And(
                 Set(EntityMemory *NoteHeadX Add(Multiply(LaneWidth RemapClamped(NoteHeadTime NoteTailTime NoteHeadLane NoteTailLane Time)) If(Equal(Mod(Lanes 2) 0) Divide(LaneWidth 2) 0)))
 
                 Set(EntityMemory *NoteHeadX1 Subtract(NoteHeadX HalfNoteWidth))
-                Set(EntityMemory *NoteHeadX2 Add(NoteHeadX HalfNoteWidth Multiply(LaneWidth NoteXSize)))
+                Set(EntityMemory *NoteHeadX2 Add(NoteHeadX HalfNoteWidth Multiply(LaneWidth RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time))))
 
                 Draw(
                     TextureSlide
@@ -235,17 +236,17 @@ DrawNoteSlide:And(
                     Execute(
                         MoveParticleEffect(
                             HoldEffectLID
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) LaneY1
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectLY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectLY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) LaneY1
+							Multiply(0.83 NoteHeadX1) LaneY1
+							Multiply(0.83 NoteHeadX1) TapEffectLY2
+							Multiply(0.83 NoteHeadX2) TapEffectLY2
+							Multiply(0.83 NoteHeadX2) LaneY1
                         )
                         MoveParticleEffect(
                             HoldEffectCID
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY1
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY1
+							Multiply(0.83 NoteHeadX1) Add(LaneY1 Multiply(Subtract(HoldEffectCY1 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
+							Multiply(0.83 NoteHeadX1) Add(LaneY1 Multiply(Subtract(HoldEffectCY2 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
+							Multiply(0.83 NoteHeadX2) Add(LaneY1 Multiply(Subtract(HoldEffectCY2 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
+							Multiply(0.83 NoteHeadX2) Add(LaneY1 Multiply(Subtract(HoldEffectCY1 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
                         )
                     )
                 )
@@ -263,21 +264,24 @@ DrawNoteSlide:And(
             Not(InputState)
             NoteHeadHoldEffectLID
             Execute(
-                Set(EntityMemory *NoteHeadX Multiply(LaneWidth RemapClamped(NoteHeadTime NoteTailTime NoteHeadLane NoteTailLane Time)))
+                Set(EntityMemory *NoteHeadX Add(Multiply(LaneWidth RemapClamped(NoteHeadTime NoteTailTime NoteHeadLane NoteTailLane Time)) If(Equal(Mod(Lanes 2) 0) Divide(LaneWidth 2) 0)))
+                Set(EntityMemory *NoteHeadX1 Subtract(NoteHeadX HalfNoteWidth))
+                Set(EntityMemory *NoteHeadX2 Add(NoteHeadX HalfNoteWidth Multiply(LaneWidth RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time))))
+
 
                 MoveParticleEffect(
                     NoteHeadHoldEffectLID
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) LaneY1
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectLY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectLY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) LaneY1
+					Multiply(0.83 NoteHeadX1) LaneY1
+					Multiply(0.83 NoteHeadX1) TapEffectLY2
+					Multiply(0.83 NoteHeadX2) TapEffectLY2
+					Multiply(0.83 NoteHeadX2) LaneY1
                 )
                 MoveParticleEffect(
                     NoteHeadHoldEffectCID
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY1
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) HoldEffectCY1
+					Multiply(0.83 NoteHeadX1) Add(LaneY1 Multiply(Subtract(HoldEffectCY1 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
+					Multiply(0.83 NoteHeadX1) Add(LaneY1 Multiply(Subtract(HoldEffectCY2 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
+					Multiply(0.83 NoteHeadX2) Add(LaneY1 Multiply(Subtract(HoldEffectCY2 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
+					Multiply(0.83 NoteHeadX2) Add(LaneY1 Multiply(Subtract(HoldEffectCY1 LaneY1) 0.25 RemapClamped(NoteHeadTime NoteTailTime NoteHeadSize NoteXSize Time)))
                 )
             )
         )
@@ -302,10 +306,10 @@ SpawnHoldEffect:And(
         Set(EntitySharedMemory *HoldEffectLID
             SpawnParticleEffect(
                 ParticleEffectTapHoldL
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteHeadLane))) LaneY1
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteHeadLane))) TapEffectLY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteHeadLane))) TapEffectLY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteHeadLane))) LaneY1
+				Multiply(0.83 NoteHeadX1) LaneY1
+				Multiply(0.83 NoteHeadX1) TapEffectLY2
+				Multiply(0.83 NoteHeadX2) TapEffectLY2
+				Multiply(0.83 NoteHeadX2) LaneY1
                 1
                 1
             )
@@ -313,10 +317,10 @@ SpawnHoldEffect:And(
         Set(EntitySharedMemory *HoldEffectCID
             SpawnParticleEffect(
                 ParticleEffectTapHoldC
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteHeadLane))) HoldEffectCY1
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteHeadLane))) HoldEffectCY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteHeadLane))) HoldEffectCY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteHeadLane))) HoldEffectCY1
+				Multiply(0.83 NoteHeadX1) Add(LaneY1 Multiply(0.25 NoteHeadSize Subtract(HoldEffectCY1 LaneY1)))
+				Multiply(0.83 NoteHeadX1) Add(LaneY1 Multiply(0.25 NoteHeadSize Subtract(HoldEffectCY1 LaneY1)))
+				Multiply(0.83 NoteHeadX2) Add(LaneY1 Multiply(0.25 NoteHeadSize Subtract(HoldEffectCY1 LaneY1)))
+				Multiply(0.83 NoteHeadX2) Add(LaneY1 Multiply(0.25 NoteHeadSize Subtract(HoldEffectCY1 LaneY1)))
                 1
                 1
             )
@@ -344,10 +348,10 @@ PlayTapEffect:And(
         )
 		SpawnParticleEffect(
 			ParticleEffectTapNormalC
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY1
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY2
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY2
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY1
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY1 LaneY1)))
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY2 LaneY1)))
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY2 LaneY1)))
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY1 LaneY1)))
 			0.6
 			0
 		)
@@ -367,10 +371,10 @@ PlayFlickEffect:And(
         )
         SpawnParticleEffect(
             ParticleEffectTapFlickC
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY1
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY2
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY2
-			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) TapEffectCY1
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY1 LaneY1)))
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY2 LaneY1)))
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY2 LaneY1)))
+			Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 NoteXSize Floor(Divide(Lanes 2)) NoteTailLane))) Add(LaneY1 Multiply(0.25 NoteXSize Subtract(TapEffectCY1 LaneY1)))
             0.6
             0
         )
@@ -437,11 +441,15 @@ NoteBaseY2:Add(1 Divide(NoteHeight LaneYMultiplier))
 TapEffectLY2:Add(LaneY1 Multiply(2 HalfNoteWidth NoteEffectSize))
 HalfTapEffectLWidth:Multiply(HalfNoteWidth NoteEffectSize)
 HalfTapEffectCWidth:Multiply(HalfNoteWidth NoteEffectSize 3)
+
 TapEffectCY1:Subtract(LaneY1 Multiply(HalfNoteWidth NoteEffectSize 2))
 TapEffectCY2:Add(LaneY1 Multiply(HalfNoteWidth NoteEffectSize 2))
+
 HalfHoldEffectCWidth:Multiply(HalfNoteWidth NoteEffectSize 1.8)
+
 HoldEffectCY1:Subtract(LaneY1 Multiply(HalfNoteWidth NoteEffectSize 1.2))
 HoldEffectCY2:Add(LaneY1 Multiply(HalfNoteWidth NoteEffectSize 1.2))
+
 NoteScreenTime:Divide(Subtract(12 NoteSpeed) 2)
 NoteTimeOffset:Divide(LevelAudioOffset 1000)
 MirrorMultiplier:If(Mirror -1 1)
@@ -1264,8 +1272,8 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
                     )
 					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionTailLane))) LaneY1
 					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectLY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectLY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionTailLane))) LaneY1
+					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionTailSize Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectLY2
+					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionTailSize Floor(Divide(Lanes 2)) CompanionTailLane))) LaneY1
                     0.4
                     0
                 )
@@ -1275,10 +1283,10 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
                         ParticleEffectTapFlickC
                         ParticleEffectTapNormalC
                     )
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectCY1
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectCY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectCY2
-					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionTailLane))) TapEffectCY1
+					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionTailLane))) Add(LaneY1 Multiply(0.25 CompanionTailSize Subtract(TapEffectCY1 LaneY1)))
+					Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionTailLane))) Add(LaneY1 Multiply(0.25 CompanionTailSize Subtract(TapEffectCY2 LaneY1)))
+					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionTailSize Floor(Divide(Lanes 2)) CompanionTailLane))) Add(LaneY1 Multiply(0.25 CompanionTailSize Subtract(TapEffectCY2 LaneY1)))
+					Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionTailSize Floor(Divide(Lanes 2)) CompanionTailLane))) Add(LaneY1 Multiply(0.25 CompanionTailSize Subtract(TapEffectCY1 LaneY1)))
                     0.6
                     0
                 )
@@ -1291,8 +1299,8 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
                 ParticleEffectLaneL
 				GetShifted(LevelData *LaneBX Add(CompanionTailLane Floor(Divide(Lanes 2)))) -1
 				GetShifted(LevelData *LaneTX Add(CompanionTailLane Floor(Divide(Lanes 2)))) LaneY2
-				GetShifted(LevelData *LaneTX Add(CompanionTailLane Floor(Divide(Lanes 2)) 1 CompanionNoteSize)) LaneY2
-				GetShifted(LevelData *LaneBX Add(CompanionTailLane Floor(Divide(Lanes 2)) 1 CompanionNoteSize)) -1
+				GetShifted(LevelData *LaneTX Add(CompanionTailLane Floor(Divide(Lanes 2)) 1 CompanionTailSize)) LaneY2
+				GetShifted(LevelData *LaneBX Add(CompanionTailLane Floor(Divide(Lanes 2)) 1 CompanionTailSize)) -1
                 0.2
                 0
             )
@@ -1308,13 +1316,15 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
             And(
                 Not(CompanionHoldEffectLID)
                 Execute(
+					Set(EntityMemory *CompanionHeadCurrentX1 Subtract(CompanionHeadX HalfNoteWidth))
+					Set(EntityMemory *CompanionHeadCurrentX2 Add(CompanionHeadX HalfNoteWidth Multiply(LaneWidth CompanionHeadSize)))
                     Set(EntityMemory *CompanionHoldEffectLID
                         SpawnParticleEffect(
                             ParticleEffectTapHoldL
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) LaneY1
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) TapEffectLY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) TapEffectLY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) LaneY1
+							Multiply(0.83 CompanionHeadCurrentX1) LaneY1
+							Multiply(0.83 CompanionHeadCurrentX1) TapEffectLY2
+							Multiply(0.83 CompanionHeadCurrentX2) TapEffectLY2
+							Multiply(0.83 CompanionHeadCurrentX2) LaneY1
                             1
                             1
                         )
@@ -1322,10 +1332,10 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
                     Set(EntityMemory *CompanionHoldEffectCID
                         SpawnParticleEffect(
                             ParticleEffectTapHoldC
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY1
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY2
-							Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY1
+							Multiply(0.83 CompanionHeadCurrentX1) Add(LaneY1 Multiply(0.25 CompanionHeadSize Subtract(HoldEffectCY1 LaneY1)))
+							Multiply(0.83 CompanionHeadCurrentX1) Add(LaneY1 Multiply(0.25 CompanionHeadSize Subtract(HoldEffectCY2 LaneY1)))
+							Multiply(0.83 CompanionHeadCurrentX2) Add(LaneY1 Multiply(0.25 CompanionHeadSize Subtract(HoldEffectCY2 LaneY1)))
+							Multiply(0.83 CompanionHeadCurrentX2) Add(LaneY1 Multiply(0.25 CompanionHeadSize Subtract(HoldEffectCY1 LaneY1)))
                             1
                             1
                         )
@@ -1333,20 +1343,22 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
                 )
             )
 
-            Set(EntityMemory *CompanionHeadCurrentX RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadX CompanionTailX Time))
+			Set(EntityMemory *CompanionHeadCurrentX Add(Multiply(LaneWidth RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadLane CompanionTailLane Time)) If(Equal(Mod(Lanes 2) 0) Divide(LaneWidth 2) 0)))
+			Set(EntityMemory *CompanionHeadCurrentX1 Subtract(CompanionHeadCurrentX HalfNoteWidth))
+			Set(EntityMemory *CompanionHeadCurrentX2 Add(CompanionHeadCurrentX HalfNoteWidth Multiply(LaneWidth RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadSize CompanionTailSize Time))))
             MoveParticleEffect(
                 CompanionHoldEffectLID
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) LaneY1
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) TapEffectLY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) TapEffectLY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) LaneY1
+				Multiply(0.83 CompanionHeadCurrentX1) LaneY1
+				Multiply(0.83 CompanionHeadCurrentX1) TapEffectLY2
+				Multiply(0.83 CompanionHeadCurrentX2) TapEffectLY2
+				Multiply(0.83 CompanionHeadCurrentX2) LaneY1
             )
             MoveParticleEffect(
                 CompanionHoldEffectCID
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY1
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY2
-				Multiply(0.83 GetShifted(LevelData *LaneBX Add(1 CompanionNoteSize Floor(Divide(Lanes 2)) CompanionHeadLane))) HoldEffectCY1
+				Multiply(0.83 CompanionHeadCurrentX1) Add(LaneY1 Multiply(Subtract(HoldEffectCY1 LaneY1) 0.25 RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadSize CompanionTailSize Time)))
+				Multiply(0.83 CompanionHeadCurrentX1) Add(LaneY1 Multiply(Subtract(HoldEffectCY2 LaneY1) 0.25 RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadSize CompanionTailSize Time)))
+				Multiply(0.83 CompanionHeadCurrentX2) Add(LaneY1 Multiply(Subtract(HoldEffectCY2 LaneY1) 0.25 RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadSize CompanionTailSize Time)))
+				Multiply(0.83 CompanionHeadCurrentX2) Add(LaneY1 Multiply(Subtract(HoldEffectCY1 LaneY1) 0.25 RemapClamped(CompanionHeadTime CompanionTailTime CompanionHeadSize CompanionTailSize Time)))
             )
         )
     )
@@ -1863,26 +1875,33 @@ SimLineDataOffset2:Multiply(SimLineIndex2 32)
 *CompanionHasHead:0
 *CompanionHeadTime:1
 *CompanionHeadLane:2
-*CompanionIsFlick:3
-*CompanionTailTime:4
-*CompanionTailLane:5
-*CompanionNoteSize:6
-*CompanionTailX:7
-*CompanionHeadX:8
-*CompanionHeadCurrentX:9
-*CompanionHoldEffectLID:10
-*CompanionHoldEffectCID:11
+*CompanionHeadSize:3
+*CompanionIsFlick:4
+*CompanionTailTime:5
+*CompanionTailLane:6
+*CompanionTailSize:7
+*CompanionTailX:8
+*CompanionHeadX:9
+*CompanionHeadCurrentX:10
+*CompanionHoldEffectLID:11
+*CompanionHoldEffectCID:12
+*CompanionHeadCurrentX1:13
+*CompanionHeadCurrentX2:14
+
 
 CompanionHasHead:Get(EntityMemory *CompanionHasHead)
 CompanionHeadTime:Get(EntityMemory *CompanionHeadTime)
 CompanionHeadLane:Get(EntityMemory *CompanionHeadLane)
+CompanionHeadSize:Get(EntityMemory *CompanionHeadSize)
 CompanionIsFlick:Get(EntityMemory *CompanionIsFlick)
 CompanionTailTime:Get(EntityMemory *CompanionTailTime)
 CompanionTailLane:Get(EntityMemory *CompanionTailLane)
-CompanionNoteSize:Get(EntityMemory *CompanionNoteSize)
+CompanionTailSize:Get(EntityMemory *CompanionTailSize)
 CompanionTailX:Get(EntityMemory *CompanionTailX)
 CompanionHeadX:Get(EntityMemory *CompanionHeadX)
 CompanionHeadCurrentX:Get(EntityMemory *CompanionHeadCurrentX)
 CompanionHoldEffectLID:Get(EntityMemory *CompanionHoldEffectLID)
 CompanionHoldEffectCID:Get(EntityMemory *CompanionHoldEffectCID)
+CompanionHeadCurrentX1:Get(EntityMemory *CompanionHeadCurrentX1)
+CompanionHeadCurrentX2:Get(EntityMemory *CompanionHeadCurrentX2)
 `
