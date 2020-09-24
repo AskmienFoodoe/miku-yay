@@ -2,7 +2,7 @@ export const script =
 `
 //
 // Bandori Engine
-// For Sonolus 0.4.4
+// For Sonolus 0.4.6
 //
 // A recreation of Project Sekai engine
 // By Water Boiled Pizza
@@ -129,7 +129,7 @@ InitAuto:And(
 IsNoteTailInGoodWindow:LessOr(Subtract(NoteTailTime Subtract(Time InputOffset)) GoodWindow)
 
 IsTouchY:LessOr(TempTouchY JudgeYMax)
-IsTouchXInTailLane:And(GreaterOr(TempTouchX Add(Multiply(NoteTailX1 0.83) Multiply(LaneWidth -0.175))) LessOr(TempTouchX Add(Multiply(NoteTailX2 0.83) Multiply(LaneWidth 0.175))))
+IsTouchXInTailLane:And(GreaterOr(TempTouchX Add(Multiply(NoteTailX1 0.83) Multiply(LaneWidth If(StrictJudgment -0.175 -0.5)))) LessOr(TempTouchX Add(Multiply(NoteTailX2 0.83) Multiply(LaneWidth If(StrictJudgment 0.175 0.5)))))
 
 ProcessTouchHead:And(
     Not(InputState)
@@ -961,12 +961,13 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
 			
 			IsTouchY
 			IsTouchXInTailLane
-            GreaterOr(Subtract(Time InputOffset) NoteTailTime)
-			
+			//GreaterOr(Subtract(TempTouchT TempTouchST) Subtract(NoteTailTime NoteHeadTime))
+			GreaterOr(Subtract(Time InputOffset) NoteTailTime)
             Execute(
                 Set(TemporaryMemory *TempTouchOccupied true)
                 Set(LevelMemory *Tilt Add(Tilt TempTouchX))
                 And(
+					GreaterOr(Subtract(Time InputOffset) NoteTailTime)
 
                     Execute(
                         Set(EntityMemory *InputState Terminated)
@@ -1044,13 +1045,14 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
 			
 			IsTouchY
             IsTouchXInTailLane
-            IsNoteTailInGoodWindow
-
+			//GreaterOr(Subtract(TempTouchT TempTouchST) Subtract(NoteTailTime NoteHeadTime))
+			GreaterOr(Subtract(Time InputOffset Multiply(-1 PerfectWindow)) NoteTailTime)
             Execute(
                 Set(TemporaryMemory *TempTouchOccupied true)
                 Set(LevelMemory *Tilt Add(Tilt TempTouchX))
                 And(
                     TempTouchEnded
+					IsNoteTailInGoodWindow
 
                     Execute(
                         Set(EntityMemory *InputState Terminated)
@@ -1128,8 +1130,8 @@ StageCoverY:Lerp(LaneY2 LaneY1 StageCover)
 			
 			IsTouchY
             IsTouchXInTailLane
-            GreaterOr(Subtract(Time InputOffset) NoteTailTime)
-
+			//GreaterOr(Subtract(TempTouchT TempTouchST) Subtract(NoteTailTime NoteHeadTime))
+			GreaterOr(Subtract(Time InputOffset) NoteTailTime)
             Execute(
                 Set(TemporaryMemory *TempTouchOccupied true)
                 Set(LevelMemory *Tilt Add(Tilt TempTouchX))
