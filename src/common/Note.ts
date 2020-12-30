@@ -1,11 +1,15 @@
-export class Note {
+import { ChartElement } from "./types"
+
+export class Note implements ChartElement {
     type: number
-    time: number
+    measure: number
+    beat?: number
+    time?: number
     lane: number
     size: number
     id: number
 
-    constructor(time: number, type: number, lane: number, size: number, id: number) {
+    constructor(measure: number, type: number, lane: number, size: number, id: number) {
         
         this.type = (type => {
             switch (type) {
@@ -27,7 +31,7 @@ export class Note {
                     return 0
                 }
         })(type)
-        this.time = time
+        this.measure = measure
         this.lane = lane - 8
         this.size = size - 1
         this.id = id
