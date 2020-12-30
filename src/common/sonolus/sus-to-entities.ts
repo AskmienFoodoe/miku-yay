@@ -3,14 +3,14 @@ import { BPM, ChartElement, TimeSignature } from '../types'
 
 function holdClear(notes: Note[], holds: Note[]) {
     const newHolds = holds.map(hold => {
-        if (notes.some(note => note.type === 4 && note.time === hold.time && note.lane === hold.lane)) {
+        if (notes.some(note => note.type === 4 && note.measure === hold.measure && note.lane === hold.lane)) {
             hold.type = 7
         }
         return hold
     })
 
     const newNotes = notes.filter(note => !(
-        holds.some(hold => note.time === hold.time && note.lane === hold.lane) &&
+        holds.some(hold => note.measure === hold.measure && note.lane === hold.lane) &&
         (note.type === 2 || note.type === 4)
     ))
 
@@ -145,7 +145,7 @@ export function susToEntities(inputFile: string, offset: number = 0) {
     ({ newNotes: notes, newHolds: holds0 } = holdClear(notes, holds0));
     ({ newNotes: notes, newHolds: holds1 } = holdClear(notes, holds1));
 
-    const chart: ChartElement[] = [...notes.concat(holds0).concat(holds1), ...bpmMarkers, ...timeSignatures].sort((a, b) => a.measure - b.measure)
+    const chart: ChartElement[] = [...notes.concat(holds0).concat(holds1).sort(comparator), ...bpmMarkers, ...timeSignatures].sort((a, b) => a.measure - b.measure)
     const notesOnly = BeatsToSeconds(MeasuresToBeats(chart)).filter(chartElement => (chartElement as Note).type !== undefined) as Note[]
 
     const holdsPos = [0, 0]
@@ -170,7 +170,7 @@ export function susToEntities(inputFile: string, offset: number = 0) {
         } else {
             data.index++
         }
-        data.values.push(note.time || 0)
+        data.values.push(parseFloat(note.time!.toFixed(4)))
         data.values.push(note.lane)
         data.values.push(note.size)
         return {

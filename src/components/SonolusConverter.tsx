@@ -21,8 +21,8 @@ export default class SonolusConverter extends React.Component {
     handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: ButtonProps) => {
         try {
             const entities = susToEntities(this.state.inputChart)
-            //const level = compile(script, levelScript, entities)
-            this.setState({ level: JSON.stringify(entities), options: JSON.stringify(options) })
+            const level = compile(script, levelScript, entities)
+            this.setState({ level: JSON.stringify(level), options: JSON.stringify(options) })
         } catch(err) {
             console.log(err)
         }
