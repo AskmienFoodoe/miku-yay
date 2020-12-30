@@ -40,7 +40,7 @@ function BeatsToSeconds(chart: ChartElement[]) {
     let totalSeconds = 0
 
     chart.forEach(chartElement => {
-        chartElement.time = totalSeconds + (chartElement.beat || 0 - totalBeats) * secondsPerBeat
+        chartElement.time = totalSeconds + ((chartElement.beat || 0) - totalBeats) * secondsPerBeat
         if ((chartElement as BPM).bpm) {
             secondsPerBeat = 60 / (chartElement as BPM).bpm || 0
             totalBeats = chartElement.beat || totalBeats
